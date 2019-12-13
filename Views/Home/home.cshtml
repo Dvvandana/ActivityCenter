@@ -1,0 +1,48 @@
+@model HomeView
+<div class="container">
+    <div class="navbar">
+        <h1> Dojo Activity Cneter</h1>
+        <h2>Welcome @Model.loggedUser.Name</h2>
+        <a href="/logOut">LogOut</a>
+    </div>
+    <div class="row">
+        <table class="table"> 
+            <thead>
+                <th>Activity </th>
+                <th>Date and time</th>
+                <th>Duration</th>
+                <th>Event Coordinator</th>
+                <th> No.Of Participants</th>
+                <th> Actions</th>
+            </thead>
+            @foreach (Happening item in Model.AllHappenings.OrderByDescending(h => h.HappeningDate))
+            {
+                bool found = false;
+                <tr>
+                    <td ><a href="/activity/@item.HappeningId"> @item.Title</a></td>
+                    <td>@item.HappeningDate.ToString("m/dd") @item.StartTime.ToString("t")</td>
+                    <td>@item.Duration @item.DurationMetric</td>
+                    <td>@item.CreatedBy.Name</td>
+                    <td>@item.ParticipantsList.Count</td>
+                    <td>
+                        @if(Model.loggedUser.createdPlan.Contains(item)){
+                            <td><a href="/activity/delete/@item.HappeningId">Delete</td>
+                        }else{
+                            @foreach (Participation part in Model.loggedUser.ActivitiesToAttend)
+                            {
+                                if(item.ParticipantsList.Contains(part)){
+                                    <td><a href="/activity/leave/@part.ParticipationId">Leave</a></td>
+                                    found = true;
+                                }
+                            }
+                            if(!found){
+                                <td ><a href="/activity/join/@item.HappeningId">Join </a></td>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <a href="/new"><button>Add New Acticity</button></a>
+</div>

@@ -1,0 +1,42 @@
+@model ActivityDetail
+
+<div class="container">
+    <div class="row">
+        <h1>@Model.Happening.Title&nbsp;&nbsp;&nbsp;</h1>
+        <a href="/home">Home</a>
+        @{
+            bool found = false;
+            @if(Model.Happening.CreatedBy == Model.loggedUser){
+                <a href="/activity/delete/@Model.Happening.HappeningId">delete </a>
+            }
+            @foreach (Participation h in Model.loggedUser.ActivitiesToAttend)
+            {
+                
+                @if(h.JoiningActivity == Model.Happening){
+                    <a href="/activity/leave/@h.ParticipationId">Leave</a>
+                    found = true;
+                }
+            }
+            @if(!found){
+                <a href="/activity/join/@Model.Happening.HappeningId">Join</a>
+            }
+        }
+        
+    </div>
+
+    <p> Description:</p>
+    <p>@Model.Happening.Description</p>
+    <div class="row">
+        <p>Participants:</p>
+        <ul>
+
+        
+        @foreach (Participation p in Model.Happening.ParticipantsList){
+            <li>@p.Participant.Name
+                
+            </li>
+        }
+       </ul>
+    </div>
+    
+</div>
